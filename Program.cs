@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Text.Json;
 using System.Collections.Generic;
 using Terminal.Gui;
 
@@ -20,18 +22,18 @@ class Program
 			})
 		});
 
-		// var statusBar = new StatusBar (new Label("Delver path: "));
+		var delverPath = loadSettings();
 		var delverPathLabel = new Label("Delver path:")
 			{ X = 1, Y = 1, Width = 13, Height = 1 };
-		var delverPathField = new TextField("null")
+		var delverPathField = new TextField(delverPath)
 			{ X = 14, Y = 1, Width = Dim.Fill(), Height = 1 };
 
 		var savesListData = new List<string>() { "Save 0", "Save 1", "Save 3" };
 		var savesList = new ListView(savesListData) {
-			X = 0,
+			X = 1,
 			Y = 0,
-			Width = Dim.Fill(),
-			Height = Dim.Fill(),
+			Width = Dim.Fill() - 1,
+			Height = Dim.Fill() - 1,
 			AllowsMarking = false
 		};
 
@@ -41,21 +43,25 @@ class Program
 		var dataWindow = new Window("Data Editor")
 			{ X = 21, Y = 3, Width = Dim.Fill(), Height = Dim.Fill() };
 		var playerHpLabel = new Label("HP:")
-			{ X = 0, Y = 0, Width = 10, Height = 1, TextAlignment = Terminal.Gui.TextAlignment.Right };
+			{ X = 0, Y = 1, Width = 10, Height = 1, TextAlignment = Terminal.Gui.TextAlignment.Right };
 		var playerHp = new TextField()
-			{ X = 11, Y = 0, Width = Dim.Fill() - 1, Height = 1 };
+			{ X = 11, Y = 1, Width = Dim.Fill() - 2, Height = 1 };
 		var playerMaxHpLabel = new Label("Max HP:")
-			{ X = 0, Y = 2, Width = 10, Height = 1, TextAlignment = Terminal.Gui.TextAlignment.Right };
+			{ X = 0, Y = 3, Width = 10, Height = 1, TextAlignment = Terminal.Gui.TextAlignment.Right };
 		var playerMaxHp = new TextField()
-			{ X = 11, Y = 2, Width = Dim.Fill() - 1, Height = 1 };
+			{ X = 11, Y = 3, Width = Dim.Fill() - 2, Height = 1 };
 		var playerGoldLabel = new Label("Gold:")
-			{ X = 0, Y = 4, Width = 10, Height = 1, TextAlignment = Terminal.Gui.TextAlignment.Right };
+			{ X = 0, Y = 5, Width = 10, Height = 1, TextAlignment = Terminal.Gui.TextAlignment.Right };
 		var playerGold = new TextField()
-			{ X = 11, Y = 4, Width = Dim.Fill() - 1, Height = 1 };
+			{ X = 11, Y = 5, Width = Dim.Fill() - 2, Height = 1 };
 		var playerXpLabel = new Label("XP:")
-			{ X = 0, Y = 6, Width = 10, Height = 1, TextAlignment = Terminal.Gui.TextAlignment.Right };
+			{ X = 0, Y = 7, Width = 10, Height = 1, TextAlignment = Terminal.Gui.TextAlignment.Right };
 		var playerXp = new TextField()
-			{ X = 11, Y = 6, Width = Dim.Fill() - 1, Height = 1 };
+			{ X = 11, Y = 7, Width = Dim.Fill() - 2, Height = 1 };
+
+		var updateButton = new Button ("Update", is_default: false)
+			{ X = 11, Y = 9, Height = 1 };
+		updateButton.Clicked += () => {  };
 
 		savesWindow.Add(savesList);
 		dataWindow.Add
@@ -63,16 +69,65 @@ class Program
 			playerHpLabel,playerHp,
 			playerMaxHpLabel, playerMaxHp,
 			playerGoldLabel, playerGold,
-			playerXpLabel, playerXp
+			playerXpLabel, playerXp,
+			updateButton
 		);
 		mainWindow.Add(delverPathLabel, delverPathField, savesWindow, dataWindow);
-		top.Add(mainWindow, menuWindow);
+		top.Add(menuWindow, mainWindow);
 		Application.Run();
 	}
 
 	static bool Quit()
 	{
-		var n = MessageBox.Query (50, 7, "Quit", "Вы лох?", "Yes", "No");
+		var n = MessageBox.Query (20, 5, "Quit", "Вы лох?", "Yes", "No");
 		return n == 0;
+	}
+
+	static string loadSettings()
+	{
+		string createConfigFile()
+		{
+			StreamWriter delverConfigPath = System.IO.File.CreateText("./config.txt");
+			delverConfigPath.WriteLine("C:\\");
+			delverConfigPath.Close();
+
+			return("C:\\");
+		}
+
+		// check config.json file exist
+		if (File.Exists("./config.txt"))
+		{
+			string jsonRaw = System.IO.File.ReadAllText("./config.txt");
+
+			return(jsonRaw);
+		}
+		else
+		{
+			createConfigFile();
+
+			return("C:\\");
+		}
+	}
+
+	static void saveReadFile()
+	{
+		// string text = System.IO.File.ReadAllText(@"C:\Users\Public\TestFolder\WriteText.txt");
+	}
+
+	static void loadSavesSlot()
+	{
+		// try
+  //       {
+  //           string[] savesSlots = Directory.GetDirectories(@"c:\", "p*", SearchOption.TopDirectoryOnly);
+  //           Console.WriteLine("The number of directories starting with p is {0}.", dirs.Length);
+  //           foreach (string dir in dirs)
+  //           {
+  //               Console.WriteLine(dir);
+  //           }
+  //       }
+  //       catch (Exception e)
+  //       {
+  //           Console.WriteLine("The process failed: {0}", e.ToString());
+  //       }
 	}
 }
