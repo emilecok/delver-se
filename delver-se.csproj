@@ -7,12 +7,14 @@
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <BuildDir>Build</BuildDir>
     <PlatformTarget>x64</PlatformTarget>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
 
     <Version>0.1.0</Version>
     <Company>Turn Around</Company>
     <Authors>Alexander Popov</Authors>
     <Product>Delver SE</Product>
-    <ApplicationIcon>application.ico</ApplicationIcon>
+    <!-- <ApplicationIcon>application.ico</ApplicationIcon> -->
   </PropertyGroup>
 
   <ItemGroup>
