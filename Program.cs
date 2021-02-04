@@ -9,6 +9,7 @@ class Program
 	static void Main()
 	{
 		Application.Init();
+		Colors.Base = Colors.Dialog; // WTF?!
 		var top = Application.Top;
 
 		var mainWindow = new Window("Delver Save Editor")
@@ -22,11 +23,11 @@ class Program
 			})
 		});
 
-		var delverPath = loadSettings();
+		var delverPath = loadGamePath();
 		var delverPathLabel = new Label("Delver path:")
 			{ X = 1, Y = 1, Width = 13, Height = 1 };
 		var delverPathField = new TextField(delverPath)
-			{ X = 14, Y = 1, Width = Dim.Fill(), Height = 1 };
+			{ X = 14, Y = 1, Width = Dim.Fill() - 1, Height = 1 };
 
 		var savesListData = new List<string>() { "Save 0", "Save 1", "Save 3" };
 		var savesList = new ListView(savesListData) {
@@ -83,27 +84,23 @@ class Program
 		return n == 0;
 	}
 
-	static string loadSettings()
+	// return Delver path
+	static string loadGamePath()
 	{
-		string createConfigFile()
-		{
-			StreamWriter delverConfigPath = System.IO.File.CreateText("./config.txt");
-			delverConfigPath.WriteLine("C:\\");
-			delverConfigPath.Close();
-
-			return("C:\\");
-		}
-
 		// check config.json file exist
-		if (File.Exists("./config.txt"))
+		if (File.Exists("./config.json"))
 		{
-			string jsonRaw = System.IO.File.ReadAllText("./config.txt");
+			string jsonString = System.IO.File.ReadAllText("./config.json");
+			var data = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonString);
 
-			return(jsonRaw);
+			return(data["delver_path"]);
 		}
 		else
 		{
-			createConfigFile();
+			// create file with "default" path
+			StreamWriter configFile = System.IO.File.CreateText("./config.json");
+			configFile.WriteLine("{\n    \"delver_path\": \"C:\\\\\"\n}");
+			configFile.Close();
 
 			return("C:\\");
 		}
